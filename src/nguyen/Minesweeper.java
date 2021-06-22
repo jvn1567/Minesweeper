@@ -1,7 +1,5 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+/**
+ * This class creates a JavaFX GUI that runs a minesweeper game.
  */
 package nguyen;
 
@@ -17,10 +15,6 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
-/**
- *
- * @author John
- */
 public class Minesweeper extends Application {
 
     //global constants
@@ -63,6 +57,11 @@ public class Minesweeper extends Application {
         primaryStage.show();
     }
 
+    /**
+     * Creates a VBox for the user to input game parameters.
+     *
+     * @return a completed VBox for the game starting menu
+     */
     public VBox createInputPane() {
         //input labels and text fields
         inputPane = new VBox();
@@ -91,6 +90,11 @@ public class Minesweeper extends Application {
         return inputPane;
     }
 
+    /**
+     * Checks the input text fields on the start menu for valid input. Sets an
+     * error message label if input is invalid and begins the game if input is
+     * acceptable.
+     */
     public void checkInput() {
         try {
             int rows = Integer.parseInt(txtInputs[0].getText());
@@ -107,7 +111,7 @@ public class Minesweeper extends Application {
             } else {
                 gamePane = new BorderPane();
                 minefield = new Minefield(rows, cols, mines);
-                setGameArea(rows, cols, mines);
+                setGameArea(rows, cols);
                 setGameStats(rows, cols, mines);
             }
         } catch (NumberFormatException ex) {
@@ -115,7 +119,14 @@ public class Minesweeper extends Application {
         }
     }
 
-    public void setGameArea(int rows, int cols, int mines) {
+    /**
+     * Creates and places the grid for the minesweeper game into the center pane
+     * of the parent pane.
+     *
+     * @param rows number of rows in the grid
+     * @param cols number of columns in the grid
+     */
+    public void setGameArea(int rows, int cols) {
         //main game area grid and button events
         GridPane boxes = new GridPane();
         boxes.setAlignment(Pos.CENTER);
@@ -134,7 +145,7 @@ public class Minesweeper extends Application {
                         setFlag(frow, fcol);
                     }
                 });
-                boxes.add(box, row, col);
+                boxes.add(box, col, row);
                 grid[row][col] = box;
             }
         }
@@ -144,6 +155,13 @@ public class Minesweeper extends Application {
         parentPane.setCenter(gamePane);
     }
 
+    /**
+     * Creates a VBox menu displaying current game stats and a new game button.
+     *
+     * @param rows number of rows in the minesweeper grid
+     * @param cols number of columns in the minesweeper grid
+     * @param mines number of mines in the minesweeper grid
+     */
     public void setGameStats(int rows, int cols, int mines) {
         //main game menu stats
         VBox menuPane = new VBox();
@@ -173,6 +191,14 @@ public class Minesweeper extends Application {
         parentPane.setRight(menuPane);
     }
 
+    /**
+     * Performs an initial case check on the tile clicked. 1) Tile contains a
+     * mine, end the game 2) Tile has no mines surrounding, clear the chunk of
+     * tiles 3) Tile has at least one mine surrounding, clear that tile only
+     *
+     * @param row the row of the location clicked
+     * @param col the column of the location clicked
+     */
     public void handleClick(int row, int col) {
         int neighbors = minefield.getNeighbors(row, col);
         if (minefield.hasMine(row, col)) {
@@ -190,7 +216,16 @@ public class Minesweeper extends Application {
             endGame();
         }
     }
-    
+
+    /**
+     * Recursively clears chunks of tiles with no surrounding mines. The edges
+     * of the chunk will be tiles with at least one mine nearby, displayed as a
+     * number. Tiles with no neighbors are blank. Cleared tiles appear grayed
+     * out in the GUI.
+     *
+     * @param row the row to clear
+     * @param col the column to clear
+     */
     public void clearArea(int row, int col) {
         grid[row][col].setDisable(true);
         //adjacent
@@ -204,7 +239,16 @@ public class Minesweeper extends Application {
         clearLocation(row - 1, col - 1);
         clearLocation(row - 1, col + 1);
     }
-    
+
+    /**
+     * Clears the location using two cases: 1) If the tile has no neighboring
+     * mines and has not been checked, continue the recursion and mark the tile
+     * checked by disabling the button. 2) If the tile has at least one mine
+     * surrounding, clear and mark that tile only but do not continue recursion.
+     *
+     * @param row the row of location to clear
+     * @param col the column of location to clear
+     */
     public void clearLocation(int row, int col) {
         if (minefield.getNeighbors(row, col) == 0 && !isDisabled(row, col)) {
             placeNumber(row, col);
@@ -213,7 +257,14 @@ public class Minesweeper extends Application {
             placeNumber(row, col);
         }
     }
-    
+
+    /**
+     * Places a number on the button displaying the number of mines nearby. A
+     * tile/button with no mines nearby remains blank.
+     *
+     * @param row
+     * @param col
+     */
     public void placeNumber(int row, int col) {
         grid[row][col].setDisable(true);
         cleared++;
@@ -222,8 +273,15 @@ public class Minesweeper extends Application {
             grid[row][col].setText("" + minefield.getNeighbors(row, col));
         }
     }
-    
-    //out of bounds considered already disabled
+
+    /**
+     * Returns whether the passed location already was cleared (its button is
+     * disabled). Out of bounds locations are considered already cleared.
+     *
+     * @param row the row of the location to check
+     * @param col the column of the location to check
+     * @return whether the location is disabled or out of bounds (true)
+     */
     public boolean isDisabled(int row, int col) {
         if (row < 0 || row >= grid.length || col < 0 || col >= grid[0].length) {
             return true;
@@ -231,7 +289,13 @@ public class Minesweeper extends Application {
             return grid[row][col].isDisabled();
         }
     }
-    
+
+    /**
+     * Places a flag image on the button clicked (on right click)
+     *
+     * @param row row of button clicked
+     * @param col row of column clicked
+     */
     public void setFlag(int row, int col) {
         Image png = new Image(getClass().getResourceAsStream(
                 "/images/flag.png"));
@@ -242,14 +306,24 @@ public class Minesweeper extends Application {
             grid[row][col].setGraphic(flag);
         }
     }
-    
+
+    /**
+     * Places a mine image on the button
+     *
+     * @param row row of the button
+     * @param col column of the button
+     */
     public void setMine(int row, int col) {
         Image png = new Image(getClass().getResourceAsStream(
                 "/images/mine.png"));
         ImageView mine = new ImageView(png);
         grid[row][col].setGraphic(mine);
     }
-    
+
+    /**
+     * Ends the game by revealing mine locations and displays a message in the
+     * game stats menu on the right for whether the player has won or lost.
+     */
     public void endGame() {
         if (cleared == safeTiles) {
             lblEndGame.setText("YOU WIN!");
@@ -259,7 +333,11 @@ public class Minesweeper extends Application {
             revealMines();
         }
     }
-    
+
+    /**
+     * Loops through all locations in the minefield and places mine images on
+     * all buttons corresponding to a location with a mine.
+     */
     public void revealMines() {
         for (int row = 0; row < grid.length; row++) {
             for (int col = 0; col < grid[0].length; col++) {
