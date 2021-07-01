@@ -13,6 +13,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
 import javafx.stage.Stage;
 
 public class Minesweeper extends Application {
@@ -73,7 +74,9 @@ public class Minesweeper extends Application {
             VBox.setMargin(line, new Insets(0, 0, 10, 0));
             line.setAlignment(Pos.CENTER);
             lblInputs[i] = new Label();
+            lblInputs[i].setFont(Font.font(20));
             txtInputs[i] = new TextField();
+            txtInputs[i].setFont(Font.font(20));
             line.getChildren().add(lblInputs[i]);
             line.getChildren().add(txtInputs[i]);
             inputPane.getChildren().add(line);
@@ -83,6 +86,7 @@ public class Minesweeper extends Application {
         lblInputs[2].setText("Mines:  ");
         //start button and error label
         btnStart = new Button("Start Game");
+        btnStart.setFont(Font.font(20));
         btnStart.setOnAction(e -> checkInput());
         inputPane.getChildren().add(btnStart);
         VBox.setMargin(btnStart, new Insets(0, 0, 10, 0));
@@ -167,11 +171,13 @@ public class Minesweeper extends Application {
         VBox menuPane = new VBox();
         menuPane.setAlignment(Pos.CENTER);
         lblEndGame = new Label();
+        lblEndGame.setFont(Font.font(28));
         menuPane.getChildren().add(lblEndGame);
         VBox.setMargin(lblEndGame, new Insets(0, 50, 10, 50));
         stats = new Label[3];
         for (int i = 0; i < stats.length; i++) {
             stats[i] = new Label();
+            stats[i].setFont(Font.font(20));
             menuPane.getChildren().add(stats[i]);
             VBox.setMargin(stats[i], new Insets(0, 50, 10, 50));
         }
@@ -182,6 +188,7 @@ public class Minesweeper extends Application {
         stats[2].setText("Safe Tiles: " + safeTiles);
         //main game menu button
         btnRestart = new Button("New Game");
+        btnRestart.setFont(Font.font(20));
         btnRestart.setOnAction(e -> {
             parentPane.setCenter(inputPane);
             parentPane.setRight(null);
