@@ -3,7 +3,8 @@ package minesweeper;
 import javafx.application.Application;
 
 /**
- *
+ * Launches the program.
+ * 
  * @author John
  */
 public class Launcher {

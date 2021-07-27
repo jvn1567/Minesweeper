@@ -1,4 +1,4 @@
-package nguyen;
+package minesweeper;
 
 import java.util.Random;
 

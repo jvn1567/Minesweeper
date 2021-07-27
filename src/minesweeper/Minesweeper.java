@@ -1,7 +1,7 @@
 /**
  * This class creates a JavaFX GUI that runs a minesweeper game.
  */
-package nguyen;
+package minesweeper;
 
 import javafx.application.Application;
 import javafx.geometry.Insets;
